@@ -1,6 +1,10 @@
 class PostsController < ApplicationController
+
   def show
     @post = Post.find(params[:id])
+    @comment = Comment.new
+    @users = User.all
+    @user = User.new
   end
 
   def index
@@ -9,11 +13,19 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
+    @categories = Category.all
   end
 
   def create
-    post = Post.create(post_params)
-    redirect_to post
+    @post = Post.new(post_params)
+    if @post.save
+      redirect_to @post
+    else
+      flash.now[:errors] = @post.errors.full_messages
+      @post = Post.new(post_params)
+      @categories = Category.all
+      render :new
+    end
   end
 
   private
