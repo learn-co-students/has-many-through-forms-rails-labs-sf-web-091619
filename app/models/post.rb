@@ -4,5 +4,9 @@ class Post < ActiveRecord::Base
   has_many :comments
   has_many :users, through: :comments
 
+  accepts_nested_attributes_for :categories, reject_if: proc {|attributes| attributes['name'].blank?}
 
+  def comment_users
+    comments.map {|c| c.user}.uniq
+  end
 end
